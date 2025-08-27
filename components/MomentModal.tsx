@@ -12,9 +12,10 @@ import {
   PanResponder,
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
-import { X, Zap, MessageCircle, Share, TrendingUp } from 'lucide-react-native';
+import { X, MessageCircle, Share } from 'lucide-react-native';
 import CommentModal from './CommentModal';
 import ShareModal from './ShareModal';
+import BumpIcon from './BumpIcon';
 
 const { width, height } = Dimensions.get('window');
 
@@ -29,17 +30,18 @@ interface Moment {
 
 interface MomentModalProps {
   visible: boolean;
-  moment: Moment;
+  moment: Moment | null;
   moments: Moment[];
   onClose: () => void;
 }
 
 export default function MomentModal({ visible, moment, moments, onClose }: MomentModalProps) {
   const { theme } = useTheme();
-  const [currentIndex, setCurrentIndex] = useState(moments.findIndex(m => m.id === moment.id));
+  const [currentIndex, setCurrentIndex] = useState(moment ? moments.findIndex(m => m.id === moment.id) : 0);
   const [momentsData, setMomentsData] = useState(moments.map(m => ({ ...m, isBumped: false, isTrendingUp: false })));
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [selectedMoment, setSelectedMoment] = useState<Moment | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
 
   const handleBump = (momentId: string) => {
@@ -70,10 +72,14 @@ export default function MomentModal({ visible, moment, moments, onClose }: Momen
   };
 
   const handleComment = (momentId: string) => {
+    const moment = momentsData.find(m => m.id === momentId);
+    setSelectedMoment(moment || null);
     setShowCommentModal(true);
   };
 
   const handleShare = (momentId: string) => {
+    const moment = momentsData.find(m => m.id === momentId);
+    setSelectedMoment(moment || null);
     setShowShareModal(true);
   };
 
@@ -120,10 +126,10 @@ export default function MomentModal({ visible, moment, moments, onClose }: Momen
               <View style={styles.actionsContainer}>
                 <View style={styles.leftActions}>
                   <TouchableOpacity 
-                    style={styles.actionButton}
+                    style={styles.bumpButton}
                     onPress={() => handleBump(momentItem.id)}
                   >
-                    <Zap 
+                    <BumpIcon 
                       size={28} 
                       color={momentItem.isBumped ? '#FF3040' : theme.textPrimary}
                       fill={momentItem.isBumped ? '#FF3040' : 'none'}
@@ -140,16 +146,6 @@ export default function MomentModal({ visible, moment, moments, onClose }: Momen
                     onPress={() => handleShare(momentItem.id)}
                   >
                     <Share size={28} color={theme.textPrimary} />
-                  </TouchableOpacity>
-                  <TouchableOpacity 
-                    style={styles.actionButton}
-                    onPress={() => handleTrendingUp(momentItem.id)}
-                  >
-                    <TrendingUp 
-                      size={28} 
-                      color={momentItem.isTrendingUp ? '#FF3040' : theme.textPrimary}
-                      fill={momentItem.isTrendingUp ? '#FF3040' : 'none'}
-                    />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -193,14 +189,16 @@ export default function MomentModal({ visible, moment, moments, onClose }: Momen
         {/* Comment Modal */}
         <CommentModal
           visible={showCommentModal}
-          postId={momentsData[currentIndex]?.id || ''}
+          postId={selectedMoment?.id || ''}
+          postData={selectedMoment}
           onClose={() => setShowCommentModal(false)}
         />
 
         {/* Share Modal */}
         <ShareModal
           visible={showShareModal}
-          postId={momentsData[currentIndex]?.id || ''}
+          postId={selectedMoment?.id || ''}
+          postData={selectedMoment}
           onClose={() => setShowShareModal(false)}
         />
       </View>
@@ -253,6 +251,10 @@ const styles = StyleSheet.create({
   },
   leftActions: {
     flexDirection: 'row',
+  },
+  bumpButton: {
+    marginRight: 16,
+    padding: 4,
   },
   actionButton: {
     marginRight: 16,

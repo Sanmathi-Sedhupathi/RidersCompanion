@@ -11,12 +11,13 @@ import {
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { Menu, Plus, MessageCircle, Share, TrendingUp, Zap } from 'lucide-react-native';
+import { Menu, Plus, MessageCircle, Share } from 'lucide-react-native';
 import { DrawerActions } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import StoryViewer from '@/components/StoryViewer';
 import CommentModal from '@/components/CommentModal';
 import ShareModal from '@/components/ShareModal';
+import BumpIcon from '@/components/BumpIcon';
 
 const { width } = Dimensions.get('window');
 
@@ -141,7 +142,17 @@ export default function HomeScreen() {
               <Image source={{ uri: post.image }} style={styles.postImage} />
 
               <View style={styles.postActions}>
-                <View style={styles.actionButtons}>
+                <TouchableOpacity 
+                  style={styles.bumpButton}
+                  onPress={() => handleBump(post.id)}
+                >
+                  <BumpIcon 
+                    size={24} 
+                    color={post.isBumped ? '#FF3040' : theme.textPrimary}
+                    fill={post.isBumped ? '#FF3040' : 'none'}
+                  />
+                </TouchableOpacity>
+                <View style={styles.rightActions}>
                   <TouchableOpacity 
                     style={styles.actionButton}
                     onPress={() => handleComment(post.id)}
@@ -155,16 +166,6 @@ export default function HomeScreen() {
                     <Share size={24} color={theme.textPrimary} />
                   </TouchableOpacity>
                 </View>
-                <TouchableOpacity 
-                  style={styles.bumpButton}
-                  onPress={() => handleBump(post.id)}
-                >
-                  <Zap 
-                    size={24} 
-                    color={post.isBumped ? '#FF3040' : theme.textPrimary}
-                    fill={post.isBumped ? '#FF3040' : 'none'}
-                  />
-                </TouchableOpacity>
               </View>
 
               <View style={styles.postInfo}>
@@ -267,19 +268,19 @@ const styles = StyleSheet.create({
   },
   postActions: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  actionButtons: {
+  bumpButton: {
+    marginRight: 16,
+    padding: 4,
+  },
+  rightActions: {
     flexDirection: 'row',
   },
   actionButton: {
     marginRight: 16,
-  },
-  bumpButton: {
-    padding: 4,
   },
   postInfo: {
     paddingHorizontal: 16,

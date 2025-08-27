@@ -14,6 +14,7 @@ import { X, MessageCircle, Mail, Copy, MoveHorizontal as MoreHorizontal } from '
 interface ShareModalProps {
   visible: boolean;
   postId: string;
+  postData?: any;
   onClose: () => void;
 }
 
@@ -24,7 +25,7 @@ const shareOptions = [
   { id: 'more', label: 'More Options', icon: MoreHorizontal, action: 'more' },
 ];
 
-export default function ShareModal({ visible, postId, onClose }: ShareModalProps) {
+export default function ShareModal({ visible, postId, postData, onClose }: ShareModalProps) {
   const { theme } = useTheme();
 
   const handleShare = (action: string) => {
@@ -58,7 +59,7 @@ export default function ShareModal({ visible, postId, onClose }: ShareModalProps
           {/* Header */}
           <View style={[styles.header, { borderBottomColor: theme.border }]}>
             <Text style={[styles.headerTitle, { color: theme.textPrimary }]}>
-              Share Post
+              Share Post {postData ? `• ${postData.likes} bumps` : ''}
             </Text>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
               <X size={24} color={theme.textPrimary} />

@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { Menu, Settings, Trophy, MapPin, Calendar, Users, Camera, CreditCard as Edit3, Grid3x3 as Grid3X3, Car, Warehouse } from 'lucide-react-native';
+import { Menu, Settings, Trophy, Camera, CreditCard as Edit3, Grid3x3 as Grid3X3, Car, Warehouse } from 'lucide-react-native';
 import { DrawerActions } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import MomentModal from '@/components/MomentModal';
@@ -337,14 +337,12 @@ export default function ProfileScreen() {
       </ScrollView>
 
       {/* Moment Modal */}
-      {selectedMoment && (
-        <MomentModal
-          visible={showMomentModal}
-          moment={selectedMoment}
-          moments={moments}
-          onClose={() => setShowMomentModal(false)}
-        />
-      )}
+      <MomentModal
+        visible={showMomentModal}
+        moment={selectedMoment}
+        moments={moments}
+        onClose={() => setShowMomentModal(false)}
+      />
     </View>
   );
 }

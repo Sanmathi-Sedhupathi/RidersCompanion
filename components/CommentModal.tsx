@@ -28,6 +28,7 @@ interface Comment {
 interface CommentModalProps {
   visible: boolean;
   postId: string;
+  postData?: any;
   onClose: () => void;
 }
 
@@ -61,7 +62,7 @@ const dummyComments: Comment[] = [
   },
 ];
 
-export default function CommentModal({ visible, postId, onClose }: CommentModalProps) {
+export default function CommentModal({ visible, postId, postData, onClose }: CommentModalProps) {
   const { theme } = useTheme();
   const { user } = useAuth();
   const [comments, setComments] = useState<Comment[]>(dummyComments);
@@ -111,12 +112,24 @@ export default function CommentModal({ visible, postId, onClose }: CommentModalP
         {/* Header */}
         <View style={[styles.header, { backgroundColor: theme.surface, borderBottomColor: theme.border }]}>
           <Text style={[styles.headerTitle, { color: theme.textPrimary }]}>
-            Comments
+            Comments {postData ? `• ${postData.comments || 0}` : ''}
           </Text>
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <X size={24} color={theme.textPrimary} />
           </TouchableOpacity>
         </View>
+
+        {/* Post Preview */}
+        {postData && (
+          <View style={[styles.postPreview, { backgroundColor: theme.surface, borderBottomColor: theme.border }]}>
+            <Text style={[styles.postLikes, { color: theme.textPrimary }]}>
+              {postData.likes} bumps
+            </Text>
+            <Text style={[styles.postCaption, { color: theme.textSecondary }]}>
+              {postData.caption}
+            </Text>
+          </View>
+        )}
 
         {/* Comments List */}
         <ScrollView style={styles.commentsList} showsVerticalScrollIndicator={false}>
@@ -201,6 +214,20 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     padding: 8,
+  },
+  postPreview: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+  },
+  postLikes: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  postCaption: {
+    fontSize: 14,
+    lineHeight: 18,
   },
   commentsList: {
     flex: 1,
