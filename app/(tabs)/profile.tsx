@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { Menu, Settings, Award, MapPin, Calendar, Users, Camera, CreditCard as Edit3, Grid3x3 as Grid3X3, Car, Warehouse } from 'lucide-react-native';
+import { Menu, Settings, Trophy, MapPin, Calendar, Users, Camera, CreditCard as Edit3, Grid3x3 as Grid3X3, Car, Warehouse } from 'lucide-react-native';
 import { DrawerActions } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import MomentModal from '@/components/MomentModal';
@@ -121,9 +121,9 @@ export default function ProfileScreen() {
             {/* Miles Achievement */}
             <View style={styles.milesSection}>
               <View style={styles.milesHeader}>
-                <Award size={24} color={theme.primary} />
+                <Trophy size={24} color={theme.primary} />
                 <Text style={[styles.milesTitle, { color: theme.textPrimary }]}>
-                  Miles Achievement
+                  Miles Triumph
                 </Text>
               </View>
               <View style={styles.milesContent}>
@@ -290,12 +290,12 @@ export default function ProfileScreen() {
             ]}
             onPress={() => setActiveTab('achievements')}
           >
-            <Award size={20} color={activeTab === 'achievements' ? theme.primary : theme.textSecondary} />
+            <Trophy size={20} color={activeTab === 'achievements' ? theme.primary : theme.textSecondary} />
             <Text style={[
               styles.tabButtonText,
               { color: activeTab === 'achievements' ? theme.primary : theme.textSecondary }
             ]}>
-              Achievements
+              Triumphs
             </Text>
           </TouchableOpacity>
 

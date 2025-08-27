@@ -8,7 +8,7 @@ import {
   Image,
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Heart, MessageCircle, Share, Bookmark, TrendingUp } from 'lucide-react-native';
+import { Zap, MessageCircle, Share, Bookmark, TrendingUp } from 'lucide-react-native';
 import CommentModal from '@/components/CommentModal';
 import ShareModal from '@/components/ShareModal';
 
@@ -23,7 +23,7 @@ const feedPosts = [
     comments: 45,
     timeAgo: '1h',
     location: 'Rocky Mountains, Colorado',
-    isLiked: false,
+    isBumped: false,
     isBookmarked: false,
   },
   {
@@ -36,7 +36,7 @@ const feedPosts = [
     comments: 28,
     timeAgo: '3h',
     location: 'Downtown LA',
-    isLiked: false,
+    isBumped: false,
     isBookmarked: false,
   },
   {
@@ -49,7 +49,7 @@ const feedPosts = [
     comments: 67,
     timeAgo: '6h',
     location: 'Pacific Coast Highway',
-    isLiked: false,
+    isBumped: false,
     isBookmarked: false,
   },
 ];
@@ -61,14 +61,14 @@ export default function FeedScreen() {
   const [showShareModal, setShowShareModal] = React.useState(false);
   const [selectedPostId, setSelectedPostId] = React.useState<string>('');
 
-  const handleLike = (postId: string) => {
+  const handleBump = (postId: string) => {
     setFeedData(prevPosts =>
       prevPosts.map(post =>
         post.id === postId
           ? {
               ...post,
-              isLiked: !post.isLiked,
-              likes: post.isLiked ? post.likes - 1 : post.likes + 1,
+              isBumped: !post.isBumped,
+              likes: post.isBumped ? post.likes - 1 : post.likes + 1,
             }
           : post
       )
@@ -127,12 +127,12 @@ export default function FeedScreen() {
               <View style={styles.leftActions}>
                 <TouchableOpacity 
                   style={styles.actionButton}
-                  onPress={() => handleLike(post.id)}
+                  onPress={() => handleBump(post.id)}
                 >
-                  <Heart 
+                  <Zap 
                     size={24} 
-                    color={post.isLiked ? '#FF3040' : theme.textPrimary}
-                    fill={post.isLiked ? '#FF3040' : 'none'}
+                    color={post.isBumped ? '#FF3040' : theme.textPrimary}
+                    fill={post.isBumped ? '#FF3040' : 'none'}
                   />
                 </TouchableOpacity>
                 <TouchableOpacity 
@@ -149,12 +149,12 @@ export default function FeedScreen() {
                 </TouchableOpacity>
                 <TouchableOpacity 
                   style={styles.actionButton}
-                  onPress={() => handleLike(post.id)}
+                  onPress={() => handleBump(post.id)}
                 >
                   <TrendingUp 
                     size={24} 
-                    color={post.isLiked ? '#FF3040' : theme.textPrimary}
-                    fill={post.isLiked ? '#FF3040' : 'none'}
+                    color={post.isBumped ? '#FF3040' : theme.textPrimary}
+                    fill={post.isBumped ? '#FF3040' : 'none'}
                   />
                 </TouchableOpacity>
               </View>
@@ -168,8 +168,8 @@ export default function FeedScreen() {
             </View>
 
             <View style={styles.postInfo}>
-              <Text style={[styles.likesText, { color: theme.textPrimary }]}>
-                {post.likes} likes
+              <Text style={[styles.bumpsText, { color: theme.textPrimary }]}>
+                {post.likes} bumps
               </Text>
               <Text style={[styles.captionText, { color: theme.textPrimary }]}>
                 <Text style={styles.captionUsername}>{post.username}</Text> {post.caption}
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 16,
   },
-  likesText: {
+  bumpsText: {
     fontSize: 14,
     fontWeight: '600',
     marginBottom: 4,

@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { X, Send, Heart } from 'lucide-react-native';
+import { X, Send, Zap } from 'lucide-react-native';
 
 interface Comment {
   id: string;
@@ -21,8 +21,8 @@ interface Comment {
   avatar: string;
   text: string;
   timeAgo: string;
-  likes: number;
-  isLiked: boolean;
+  bumps: number;
+  isBumped: boolean;
 }
 
 interface CommentModalProps {
@@ -38,8 +38,8 @@ const dummyComments: Comment[] = [
     avatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150',
     text: 'Amazing shot! Where is this place?',
     timeAgo: '2h',
-    likes: 12,
-    isLiked: false,
+    bumps: 12,
+    isBumped: false,
   },
   {
     id: '2',
@@ -47,8 +47,8 @@ const dummyComments: Comment[] = [
     avatar: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150',
     text: 'Love the view! 🏔️',
     timeAgo: '1h',
-    likes: 8,
-    isLiked: true,
+    bumps: 8,
+    isBumped: true,
   },
   {
     id: '3',
@@ -56,8 +56,8 @@ const dummyComments: Comment[] = [
     avatar: 'https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=150',
     text: 'Perfect weather for riding!',
     timeAgo: '45m',
-    likes: 5,
-    isLiked: false,
+    bumps: 5,
+    isBumped: false,
   },
 ];
 
@@ -67,14 +67,14 @@ export default function CommentModal({ visible, postId, onClose }: CommentModalP
   const [comments, setComments] = useState<Comment[]>(dummyComments);
   const [newComment, setNewComment] = useState('');
 
-  const handleLikeComment = (commentId: string) => {
+  const handleBumpComment = (commentId: string) => {
     setComments(prevComments =>
       prevComments.map(comment =>
         comment.id === commentId
           ? {
               ...comment,
-              isLiked: !comment.isLiked,
-              likes: comment.isLiked ? comment.likes - 1 : comment.likes + 1,
+              isBumped: !comment.isBumped,
+              bumps: comment.isBumped ? comment.bumps - 1 : comment.bumps + 1,
             }
           : comment
       )
@@ -89,8 +89,8 @@ export default function CommentModal({ visible, postId, onClose }: CommentModalP
         avatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150',
         text: newComment.trim(),
         timeAgo: 'now',
-        likes: 0,
-        isLiked: false,
+        bumps: 0,
+        isBumped: false,
       };
       setComments(prev => [comment, ...prev]);
       setNewComment('');
@@ -137,16 +137,16 @@ export default function CommentModal({ visible, postId, onClose }: CommentModalP
                 </Text>
                 <View style={styles.commentActions}>
                   <TouchableOpacity
-                    style={styles.commentLikeButton}
-                    onPress={() => handleLikeComment(comment.id)}
+                    style={styles.commentBumpButton}
+                    onPress={() => handleBumpComment(comment.id)}
                   >
-                    <Heart
+                    <Zap
                       size={16}
-                      color={comment.isLiked ? '#FF3040' : theme.textSecondary}
-                      fill={comment.isLiked ? '#FF3040' : 'none'}
+                      color={comment.isBumped ? '#FF3040' : theme.textSecondary}
+                      fill={comment.isBumped ? '#FF3040' : 'none'}
                     />
-                    <Text style={[styles.commentLikes, { color: theme.textSecondary }]}>
-                      {comment.likes}
+                    <Text style={[styles.commentBumps, { color: theme.textSecondary }]}>
+                      {comment.bumps}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -240,11 +240,11 @@ const styles = StyleSheet.create({
   commentActions: {
     flexDirection: 'row',
   },
-  commentLikeButton: {
+  commentBumpButton: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  commentLikes: {
+  commentBumps: {
     fontSize: 12,
     marginLeft: 4,
   },

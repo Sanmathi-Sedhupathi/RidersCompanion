@@ -12,7 +12,7 @@ import {
   PanResponder,
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
-import { X, Heart, MessageCircle, Share, TrendingUp } from 'lucide-react-native';
+import { X, Zap, MessageCircle, Share, TrendingUp } from 'lucide-react-native';
 import CommentModal from './CommentModal';
 import ShareModal from './ShareModal';
 
@@ -37,24 +37,10 @@ interface MomentModalProps {
 export default function MomentModal({ visible, moment, moments, onClose }: MomentModalProps) {
   const { theme } = useTheme();
   const [currentIndex, setCurrentIndex] = useState(moments.findIndex(m => m.id === moment.id));
-  const [momentsData, setMomentsData] = useState(moments.map(m => ({ ...m, isLiked: false, isBumped: false })));
+  const [momentsData, setMomentsData] = useState(moments.map(m => ({ ...m, isBumped: false, isTrendingUp: false })));
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
-
-  const handleLike = (momentId: string) => {
-    setMomentsData(prevMoments =>
-      prevMoments.map(moment =>
-        moment.id === momentId
-          ? {
-              ...moment,
-              isLiked: !moment.isLiked,
-              likes: moment.isLiked ? moment.likes - 1 : moment.likes + 1,
-            }
-          : moment
-      )
-    );
-  };
 
   const handleBump = (momentId: string) => {
     setMomentsData(prevMoments =>
@@ -63,6 +49,20 @@ export default function MomentModal({ visible, moment, moments, onClose }: Momen
           ? {
               ...moment,
               isBumped: !moment.isBumped,
+              likes: moment.isBumped ? moment.likes - 1 : moment.likes + 1,
+            }
+          : moment
+      )
+    );
+  };
+
+  const handleTrendingUp = (momentId: string) => {
+    setMomentsData(prevMoments =>
+      prevMoments.map(moment =>
+        moment.id === momentId
+          ? {
+              ...moment,
+              isTrendingUp: !moment.isTrendingUp,
             }
           : moment
       )
@@ -121,12 +121,12 @@ export default function MomentModal({ visible, moment, moments, onClose }: Momen
                 <View style={styles.leftActions}>
                   <TouchableOpacity 
                     style={styles.actionButton}
-                    onPress={() => handleLike(momentItem.id)}
+                    onPress={() => handleBump(momentItem.id)}
                   >
-                    <Heart 
+                    <Zap 
                       size={28} 
-                      color={momentItem.isLiked ? '#FF3040' : theme.textPrimary}
-                      fill={momentItem.isLiked ? '#FF3040' : 'none'}
+                      color={momentItem.isBumped ? '#FF3040' : theme.textPrimary}
+                      fill={momentItem.isBumped ? '#FF3040' : 'none'}
                     />
                   </TouchableOpacity>
                   <TouchableOpacity 
@@ -143,12 +143,12 @@ export default function MomentModal({ visible, moment, moments, onClose }: Momen
                   </TouchableOpacity>
                   <TouchableOpacity 
                     style={styles.actionButton}
-                    onPress={() => handleBump(momentItem.id)}
+                    onPress={() => handleTrendingUp(momentItem.id)}
                   >
                     <TrendingUp 
                       size={28} 
-                      color={momentItem.isBumped ? '#FF3040' : theme.textPrimary}
-                      fill={momentItem.isBumped ? '#FF3040' : 'none'}
+                      color={momentItem.isTrendingUp ? '#FF3040' : theme.textPrimary}
+                      fill={momentItem.isTrendingUp ? '#FF3040' : 'none'}
                     />
                   </TouchableOpacity>
                 </View>
@@ -156,8 +156,8 @@ export default function MomentModal({ visible, moment, moments, onClose }: Momen
 
               {/* Post Info */}
               <View style={styles.postInfo}>
-                <Text style={[styles.likesText, { color: theme.textPrimary }]}>
-                  {momentItem.likes} likes
+                <Text style={[styles.bumpsText, { color: theme.textPrimary }]}>
+                  {momentItem.likes} bumps
                 </Text>
                 <Text style={[styles.captionText, { color: theme.textPrimary }]}>
                   {momentItem.caption}
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 16,
   },
-  likesText: {
+  bumpsText: {
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 4,

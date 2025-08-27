@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { Menu, Plus, MessageCircle, Share, TrendingUp } from 'lucide-react-native';
+import { Menu, Plus, MessageCircle, Share, TrendingUp, Zap } from 'lucide-react-native';
 import { DrawerActions } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import StoryViewer from '@/components/StoryViewer';
@@ -28,7 +28,7 @@ const posts = [
     image: 'https://images.pexels.com/photos/1119796/pexels-photo-1119796.jpeg?auto=compress&cs=tinysrgb&w=800',
     caption: 'Amazing ride through the mountains today! 🏔️ #RiderLife',
     likes: 142,
-    isLiked: false,
+    isBumped: false,
     comments: 23,
     timeAgo: '2h',
   },
@@ -39,7 +39,7 @@ const posts = [
     image: 'https://images.pexels.com/photos/1119796/pexels-photo-1119796.jpeg?auto=compress&cs=tinysrgb&w=800',
     caption: 'Group ride with the squad! Best weekend ever 🏍️',
     likes: 89,
-    isLiked: false,
+    isBumped: false,
     comments: 15,
     timeAgo: '4h',
   },
@@ -59,14 +59,14 @@ export default function HomeScreen() {
     navigation.dispatch(DrawerActions.openDrawer());
   };
 
-  const handleLike = (postId: string) => {
+  const handleBump = (postId: string) => {
     setPostsData(prevPosts =>
       prevPosts.map(post =>
         post.id === postId
           ? {
               ...post,
-              isLiked: !post.isLiked,
-              likes: post.isLiked ? post.likes - 1 : post.likes + 1,
+              isBumped: !post.isBumped,
+              likes: post.isBumped ? post.likes - 1 : post.likes + 1,
             }
           : post
       )
@@ -156,20 +156,20 @@ export default function HomeScreen() {
                   </TouchableOpacity>
                 </View>
                 <TouchableOpacity 
-                  style={styles.likeButton}
-                  onPress={() => handleLike(post.id)}
+                  style={styles.bumpButton}
+                  onPress={() => handleBump(post.id)}
                 >
-                  <TrendingUp 
+                  <Zap 
                     size={24} 
-                    color={post.isLiked ? '#FF3040' : theme.textPrimary}
-                    fill={post.isLiked ? '#FF3040' : 'none'}
+                    color={post.isBumped ? '#FF3040' : theme.textPrimary}
+                    fill={post.isBumped ? '#FF3040' : 'none'}
                   />
                 </TouchableOpacity>
               </View>
 
               <View style={styles.postInfo}>
-                <Text style={[styles.likesText, { color: theme.textPrimary }]}>
-                  {post.likes} likes
+                <Text style={[styles.bumpsText, { color: theme.textPrimary }]}>
+                  {post.likes} bumps
                 </Text>
                 <Text style={[styles.captionText, { color: theme.textPrimary }]}>
                   <Text style={styles.captionUsername}>{post.username}</Text> {post.caption}
@@ -278,14 +278,14 @@ const styles = StyleSheet.create({
   actionButton: {
     marginRight: 16,
   },
-  likeButton: {
+  bumpButton: {
     padding: 4,
   },
   postInfo: {
     paddingHorizontal: 16,
     paddingBottom: 16,
   },
-  likesText: {
+  bumpsText: {
     fontSize: 14,
     fontWeight: '600',
     marginBottom: 4,
