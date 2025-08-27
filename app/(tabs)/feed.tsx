@@ -8,7 +8,7 @@ import {
   Image,
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Heart, MessageCircle, Share, Bookmark } from 'lucide-react-native';
+import { Heart, MessageCircle, Share, Bookmark, TrendingUp } from 'lucide-react-native';
 import CommentModal from '@/components/CommentModal';
 import ShareModal from '@/components/ShareModal';
 
@@ -146,6 +146,16 @@ export default function FeedScreen() {
                   onPress={() => handleShare(post.id)}
                 >
                   <Share size={24} color={theme.textPrimary} />
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={styles.actionButton}
+                  onPress={() => handleLike(post.id)}
+                >
+                  <TrendingUp 
+                    size={24} 
+                    color={post.isLiked ? '#FF3040' : theme.textPrimary}
+                    fill={post.isLiked ? '#FF3040' : 'none'}
+                  />
                 </TouchableOpacity>
               </View>
               <TouchableOpacity onPress={() => handleBookmark(post.id)}>

@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { Menu, Plus, MessageCircle, Share } from 'lucide-react-native';
+import { Menu, Plus, MessageCircle, Share, TrendingUp } from 'lucide-react-native';
 import { DrawerActions } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import StoryViewer from '@/components/StoryViewer';
@@ -158,9 +158,11 @@ export default function HomeScreen() {
                   style={styles.likeButton}
                   onPress={() => handleLike(post.id)}
                 >
-                  <Text style={[styles.fistBumpIcon, { color: post.isLiked ? '#FF3040' : theme.textPrimary }]}>
-                    🤜🤛
-                  </Text>
+                  <TrendingUp 
+                    size={24} 
+                    color={post.isLiked ? '#FF3040' : theme.textPrimary}
+                    fill={post.isLiked ? '#FF3040' : 'none'}
+                  />
                 </TouchableOpacity>
               </View>
 
@@ -277,9 +279,6 @@ const styles = StyleSheet.create({
   },
   likeButton: {
     padding: 4,
-  },
-  fistBumpIcon: {
-    fontSize: 20,
   },
   postInfo: {
     paddingHorizontal: 16,

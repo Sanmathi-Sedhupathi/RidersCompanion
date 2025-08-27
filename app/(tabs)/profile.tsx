@@ -10,9 +10,10 @@ import {
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { Menu, Settings, Award, MapPin, Calendar, Users, Camera, CreditCard as Edit3, Grid3x3 as Grid3X3, Car, Wrench } from 'lucide-react-native';
+import { Menu, Settings, Award, MapPin, Calendar, Users, Camera, CreditCard as Edit3, Grid3x3 as Grid3X3, Car, Warehouse } from 'lucide-react-native';
 import { DrawerActions } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
+import MomentModal from '@/components/MomentModal';
 
 const { width } = Dimensions.get('window');
 
@@ -26,12 +27,6 @@ export default function ProfileScreen() {
     navigation.dispatch(DrawerActions.openDrawer());
   };
 
-  const achievements = [
-    { id: '1', title: 'First Ride', description: 'Completed your first ride', icon: '🏍️' },
-    { id: '2', title: 'Speed Demon', description: 'Reached 100 km/h', icon: '⚡' },
-    { id: '3', title: 'Explorer', description: 'Visited 10 different cities', icon: '🗺️' },
-  ];
-
   const moments = [
     {
       id: '1',
@@ -39,6 +34,7 @@ export default function ProfileScreen() {
       caption: 'Epic mountain ride! 🏔️',
       likes: 45,
       timeAgo: '2h',
+      comments: 12,
     },
     {
       id: '2',
@@ -46,6 +42,7 @@ export default function ProfileScreen() {
       caption: 'Night city cruise 🌃',
       likes: 32,
       timeAgo: '1d',
+      comments: 8,
     },
     {
       id: '3',
@@ -53,6 +50,7 @@ export default function ProfileScreen() {
       caption: 'Group ride adventure',
       likes: 67,
       timeAgo: '3d',
+      comments: 23,
     },
     {
       id: '4',
@@ -60,6 +58,23 @@ export default function ProfileScreen() {
       caption: 'Sunset highway',
       likes: 28,
       timeAgo: '5d',
+      comments: 5,
+    },
+    {
+      id: '5',
+      image: 'https://images.pexels.com/photos/1119796/pexels-photo-1119796.jpeg?auto=compress&cs=tinysrgb&w=400',
+      caption: 'Weekend getaway',
+      likes: 89,
+      timeAgo: '1w',
+      comments: 34,
+    },
+    {
+      id: '6',
+      image: 'https://images.pexels.com/photos/1119796/pexels-photo-1119796.jpeg?auto=compress&cs=tinysrgb&w=400',
+      caption: 'Mountain trails',
+      likes: 156,
+      timeAgo: '1w',
+      comments: 67,
     },
   ];
 
@@ -90,26 +105,41 @@ export default function ProfileScreen() {
     { label: 'Tracking', value: '189' },
   ];
 
+  const [selectedMoment, setSelectedMoment] = useState<any>(null);
+  const [showMomentModal, setShowMomentModal] = useState(false);
+
+  const handleMomentPress = (moment: any) => {
+    setSelectedMoment(moment);
+    setShowMomentModal(true);
+  };
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 'achievements':
         return (
           <View style={styles.tabContent}>
-            <View style={styles.achievementsGrid}>
-              {achievements.map((achievement) => (
-                <TouchableOpacity
-                  key={achievement.id}
-                  style={[styles.achievementItem, { backgroundColor: theme.surface, borderColor: theme.border }]}
-                >
-                  <Text style={styles.achievementIcon}>{achievement.icon}</Text>
-                  <Text style={[styles.achievementTitle, { color: theme.textPrimary }]}>
-                    {achievement.title}
-                  </Text>
-                  <Text style={[styles.achievementDescription, { color: theme.textSecondary }]}>
-                    {achievement.description}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+            {/* Miles Achievement */}
+            <View style={styles.milesSection}>
+              <View style={styles.milesHeader}>
+                <Award size={24} color={theme.primary} />
+                <Text style={[styles.milesTitle, { color: theme.textPrimary }]}>
+                  Miles Achievement
+                </Text>
+              </View>
+              <View style={styles.milesContent}>
+                <Text style={[styles.milesValue, { color: theme.primary }]}>
+                  {user?.milesAchievement || 2847} KM
+                </Text>
+                <Text style={[styles.milesSubtitle, { color: theme.textSecondary }]}>
+                  Total Distance Traveled
+                </Text>
+              </View>
+              <View style={[styles.progressBar, { backgroundColor: theme.border }]}>
+                <View style={[styles.progressFill, { backgroundColor: theme.primary, width: '68%' }]} />
+              </View>
+              <Text style={[styles.progressText, { color: theme.textSecondary }]}>
+                68% to next milestone (5000 KM)
+              </Text>
             </View>
           </View>
         );
@@ -119,7 +149,11 @@ export default function ProfileScreen() {
           <View style={styles.tabContent}>
             <View style={styles.momentsGrid}>
               {moments.map((moment) => (
-                <TouchableOpacity key={moment.id} style={styles.momentItem}>
+                <TouchableOpacity 
+                  key={moment.id} 
+                  style={styles.momentItem}
+                  onPress={() => handleMomentPress(moment)}
+                >
                   <Image source={{ uri: moment.image }} style={styles.momentImage} />
                   <View style={styles.momentOverlay}>
                     <Text style={styles.momentLikes}>❤️ {moment.likes}</Text>
@@ -156,7 +190,7 @@ export default function ProfileScreen() {
                   </View>
                 </View>
                 <TouchableOpacity style={[styles.editVehicleButton, { backgroundColor: theme.primary }]}>
-                  <Wrench size={16} color="#FFFFFF" />
+                  <Warehouse size={16} color="#FFFFFF" />
                 </TouchableOpacity>
               </TouchableOpacity>
             ))}
@@ -247,30 +281,6 @@ export default function ProfileScreen() {
           ))}
         </View>
 
-        {/* Miles Achievement */}
-        <View style={styles.milesSection}>
-          <View style={styles.milesHeader}>
-            <Award size={24} color={theme.primary} />
-            <Text style={[styles.milesTitle, { color: theme.textPrimary }]}>
-              Miles Achievement
-            </Text>
-          </View>
-          <View style={styles.milesContent}>
-            <Text style={[styles.milesValue, { color: theme.primary }]}>
-              {user?.milesAchievement || 2847} KM
-            </Text>
-            <Text style={[styles.milesSubtitle, { color: theme.textSecondary }]}>
-              Total Distance Traveled
-            </Text>
-          </View>
-          <View style={[styles.progressBar, { backgroundColor: theme.border }]}>
-            <View style={[styles.progressFill, { backgroundColor: theme.primary, width: '68%' }]} />
-          </View>
-          <Text style={[styles.progressText, { color: theme.textSecondary }]}>
-            68% to next milestone (5000 KM)
-          </Text>
-        </View>
-
         {/* Tab Navigation */}
         <View style={styles.tabNavigation}>
           <TouchableOpacity
@@ -325,6 +335,16 @@ export default function ProfileScreen() {
         {/* Tab Content */}
         {renderTabContent()}
       </ScrollView>
+
+      {/* Moment Modal */}
+      {selectedMoment && (
+        <MomentModal
+          visible={showMomentModal}
+          moment={selectedMoment}
+          moments={moments}
+          onClose={() => setShowMomentModal(false)}
+        />
+      )}
     </View>
   );
 }
@@ -500,43 +520,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 100,
   },
-  achievementsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  achievementItem: {
-    width: '48%',
-    padding: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginBottom: 12,
-    borderWidth: 1,
-  },
-  achievementIcon: {
-    fontSize: 24,
-    marginBottom: 8,
-  },
-  achievementTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 4,
-    textAlign: 'center',
-  },
-  achievementDescription: {
-    fontSize: 12,
-    textAlign: 'center',
-    lineHeight: 16,
-  },
   momentsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
   momentItem: {
-    width: (width - 60) / 2,
+    width: (width - 80) / 3,
     aspectRatio: 1,
-    marginBottom: 10,
+    marginBottom: 4,
     borderRadius: 8,
     overflow: 'hidden',
     position: 'relative',
