@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { Menu, Settings, Award, MapPin, Calendar, Users, Camera, CreditCard as Edit3, Grid3X3, Car, Wrench } from 'lucide-react-native';
+import { Menu, Settings, Award, MapPin, Calendar, Users, Camera, CreditCard as Edit3, Grid3x3 as Grid3X3, Car, Wrench } from 'lucide-react-native';
 import { DrawerActions } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 
