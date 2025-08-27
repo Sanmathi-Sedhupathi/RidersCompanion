@@ -11,45 +11,13 @@ import {
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { Menu, Plus, Heart, MessageCircle, Share } from 'lucide-react-native';
+import { Menu, Plus, MessageCircle, Share } from 'lucide-react-native';
 import { DrawerActions } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import StoryViewer from '@/components/StoryViewer';
 import CommentModal from '@/components/CommentModal';
-import ShareModal from '@/components/ShareModal';
 
 const { width } = Dimensions.get('window');
-
-const stories = [
-  { 
-    id: '1', 
-    username: 'alex_rider', 
-    avatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150',
-    image: 'https://images.pexels.com/photos/1119796/pexels-photo-1119796.jpeg?auto=compress&cs=tinysrgb&w=800',
-    timestamp: '2h ago'
-  },
-  { 
-    id: '2', 
-    username: 'sarah_moto', 
-    avatar: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150',
-    image: 'https://images.pexels.com/photos/1119796/pexels-photo-1119796.jpeg?auto=compress&cs=tinysrgb&w=800',
-    timestamp: '4h ago'
-  },
-  { 
-    id: '3', 
-    username: 'mike_tours', 
-    avatar: 'https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=150',
-    image: 'https://images.pexels.com/photos/1119796/pexels-photo-1119796.jpeg?auto=compress&cs=tinysrgb&w=800',
-    timestamp: '6h ago'
-  },
-  { 
-    id: '4', 
-    username: 'lisa_adventure', 
-    avatar: 'https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=150',
-    image: 'https://images.pexels.com/photos/1119796/pexels-photo-1119796.jpeg?auto=compress&cs=tinysrgb&w=800',
-    timestamp: '8h ago'
-  },
-];
 
 const posts = [
   {
@@ -82,24 +50,12 @@ export default function HomeScreen() {
   const navigation = useNavigation();
   const scrollY = useRef(new Animated.Value(0)).current;
   const [postsData, setPostsData] = React.useState(posts);
-  const [selectedStory, setSelectedStory] = React.useState<any>(null);
-  const [showStoryViewer, setShowStoryViewer] = React.useState(false);
   const [showCommentModal, setShowCommentModal] = React.useState(false);
   const [showShareModal, setShowShareModal] = React.useState(false);
   const [selectedPostId, setSelectedPostId] = React.useState<string>('');
 
   const openDrawer = () => {
     navigation.dispatch(DrawerActions.openDrawer());
-  };
-
-  const handleStoryPress = (story: any) => {
-    setSelectedStory(story);
-    setShowStoryViewer(true);
-  };
-
-  const handleCloseStory = () => {
-    setShowStoryViewer(false);
-    setSelectedStory(null);
   };
 
   const handleLike = (postId: string) => {
@@ -165,32 +121,6 @@ export default function HomeScreen() {
         )}
         scrollEventThrottle={16}
       >
-        {/* Stories Section */}
-        <View style={styles.storiesContainer}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View style={styles.addStoryContainer}>
-              <View style={[styles.addStoryButton, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-                <Plus size={24} color={theme.textSecondary} />
-              </View>
-              <Text style={[styles.storyUsername, { color: theme.textSecondary }]}>Your Story</Text>
-            </View>
-            {stories.map((story) => (
-              <TouchableOpacity 
-                key={story.id} 
-                style={styles.storyContainer}
-                onPress={() => handleStoryPress(story)}
-              >
-                <View style={[styles.storyBorder, { borderColor: theme.primary }]}>
-                  <Image source={{ uri: story.avatar }} style={styles.storyAvatar} />
-                </View>
-                <Text style={[styles.storyUsername, { color: theme.textSecondary }]}>
-                  {story.username}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-
         {/* Posts Section */}
         <View style={styles.postsContainer}>
           {postsData.map((post) => (
@@ -213,16 +143,6 @@ export default function HomeScreen() {
                 <View style={styles.actionButtons}>
                   <TouchableOpacity 
                     style={styles.actionButton}
-                    onPress={() => handleLike(post.id)}
-                  >
-                    <Heart 
-                      size={24} 
-                      color={post.isLiked ? '#FF3040' : theme.textPrimary}
-                      fill={post.isLiked ? '#FF3040' : 'none'}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity 
-                    style={styles.actionButton}
                     onPress={() => handleComment(post.id)}
                   >
                     <MessageCircle size={24} color={theme.textPrimary} />
@@ -234,6 +154,14 @@ export default function HomeScreen() {
                     <Share size={24} color={theme.textPrimary} />
                   </TouchableOpacity>
                 </View>
+                <TouchableOpacity 
+                  style={styles.likeButton}
+                  onPress={() => handleLike(post.id)}
+                >
+                  <Text style={[styles.fistBumpIcon, { color: post.isLiked ? '#FF3040' : theme.textPrimary }]}>
+                    🤜🤛
+                  </Text>
+                </TouchableOpacity>
               </View>
 
               <View style={styles.postInfo}>
@@ -253,13 +181,6 @@ export default function HomeScreen() {
           ))}
         </View>
       </Animated.ScrollView>
-
-      {/* Story Viewer */}
-      <StoryViewer
-        visible={showStoryViewer}
-        story={selectedStory}
-        onClose={handleCloseStory}
-      />
 
       {/* Comment Modal */}
       <CommentModal
@@ -304,46 +225,6 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
-  storiesContainer: {
-    paddingVertical: 16,
-  },
-  addStoryContainer: {
-    alignItems: 'center',
-    marginLeft: 16,
-    marginRight: 8,
-  },
-  addStoryButton: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderStyle: 'dashed',
-  },
-  storyContainer: {
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  storyBorder: {
-    width: 66,
-    height: 66,
-    borderRadius: 33,
-    borderWidth: 2,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  storyAvatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-  },
-  storyUsername: {
-    fontSize: 12,
-    marginTop: 4,
-    maxWidth: 70,
-    textAlign: 'center',
-  },
   postsContainer: {
     paddingBottom: 20,
   },
@@ -382,13 +263,23 @@ const styles = StyleSheet.create({
     height: 300,
   },
   postActions: {
-    padding: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   actionButtons: {
     flexDirection: 'row',
   },
   actionButton: {
     marginRight: 16,
+  },
+  likeButton: {
+    padding: 4,
+  },
+  fistBumpIcon: {
+    fontSize: 20,
   },
   postInfo: {
     paddingHorizontal: 16,

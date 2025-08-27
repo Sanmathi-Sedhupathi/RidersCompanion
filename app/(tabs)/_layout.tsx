@@ -19,16 +19,12 @@ export default function TabLayout() {
         },
         tabBarActiveTintColor: theme.primary,
         tabBarInactiveTintColor: theme.textSecondary,
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '500',
-        },
+        tabBarShowLabel: false,
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
           tabBarIcon: ({ size, color }) => (
             <Home size={size} color={color} />
           ),
@@ -37,7 +33,6 @@ export default function TabLayout() {
       <Tabs.Screen
         name="feed"
         options={{
-          title: 'Feed',
           tabBarIcon: ({ size, color }) => (
             <Users size={size} color={color} />
           ),
@@ -46,7 +41,6 @@ export default function TabLayout() {
       <Tabs.Screen
         name="messages"
         options={{
-          title: 'Messages',
           tabBarIcon: ({ size, color }) => (
             <MessageCircle size={size} color={color} />
           ),
@@ -55,7 +49,6 @@ export default function TabLayout() {
       <Tabs.Screen
         name="location"
         options={{
-          title: 'Location',
           tabBarIcon: ({ size, color }) => (
             <MapPin size={size} color={color} />
           ),
@@ -64,7 +57,6 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
           tabBarIcon: ({ size, color }) => (
             <User size={size} color={color} />
           ),

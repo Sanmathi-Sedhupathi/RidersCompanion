@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,17 +6,21 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  Dimensions,
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { Menu, Settings, Award, MapPin, Calendar, Users, Camera, CreditCard as Edit3 } from 'lucide-react-native';
+import { Menu, Settings, Award, MapPin, Calendar, Users, Camera, CreditCard as Edit3, Grid3X3, Car, Wrench } from 'lucide-react-native';
 import { DrawerActions } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
+
+const { width } = Dimensions.get('window');
 
 export default function ProfileScreen() {
   const { theme } = useTheme();
   const { user } = useAuth();
   const navigation = useNavigation();
+  const [activeTab, setActiveTab] = useState('achievements');
 
   const openDrawer = () => {
     navigation.dispatch(DrawerActions.openDrawer());
@@ -26,17 +30,155 @@ export default function ProfileScreen() {
     { id: '1', title: 'First Ride', description: 'Completed your first ride', icon: '🏍️' },
     { id: '2', title: 'Speed Demon', description: 'Reached 100 km/h', icon: '⚡' },
     { id: '3', title: 'Explorer', description: 'Visited 10 different cities', icon: '🗺️' },
-    { id: '4', title: 'Social Rider', description: 'Joined 5 group rides', icon: '👥' },
+  ];
+
+  const moments = [
+    {
+      id: '1',
+      image: 'https://images.pexels.com/photos/1119796/pexels-photo-1119796.jpeg?auto=compress&cs=tinysrgb&w=400',
+      caption: 'Epic mountain ride! 🏔️',
+      likes: 45,
+      timeAgo: '2h',
+    },
+    {
+      id: '2',
+      image: 'https://images.pexels.com/photos/1119796/pexels-photo-1119796.jpeg?auto=compress&cs=tinysrgb&w=400',
+      caption: 'Night city cruise 🌃',
+      likes: 32,
+      timeAgo: '1d',
+    },
+    {
+      id: '3',
+      image: 'https://images.pexels.com/photos/1119796/pexels-photo-1119796.jpeg?auto=compress&cs=tinysrgb&w=400',
+      caption: 'Group ride adventure',
+      likes: 67,
+      timeAgo: '3d',
+    },
+    {
+      id: '4',
+      image: 'https://images.pexels.com/photos/1119796/pexels-photo-1119796.jpeg?auto=compress&cs=tinysrgb&w=400',
+      caption: 'Sunset highway',
+      likes: 28,
+      timeAgo: '5d',
+    },
+  ];
+
+  const garage = [
+    {
+      id: '1',
+      name: 'Yamaha R15 V4',
+      model: '2023',
+      color: 'Racing Blue',
+      engine: '155cc',
+      mileage: '45 kmpl',
+      image: 'https://images.pexels.com/photos/1119796/pexels-photo-1119796.jpeg?auto=compress&cs=tinysrgb&w=400',
+    },
+    {
+      id: '2',
+      name: 'Honda CB350',
+      model: '2022',
+      color: 'Matte Black',
+      engine: '348cc',
+      mileage: '38 kmpl',
+      image: 'https://images.pexels.com/photos/1119796/pexels-photo-1119796.jpeg?auto=compress&cs=tinysrgb&w=400',
+    },
   ];
 
   const stats = [
-    { label: 'Total Rides', value: '47' },
-    { label: 'Followers', value: '234' },
-    { label: 'Following', value: '189' },
+    { label: 'Moments', value: '24' },
+    { label: 'Tracker', value: '234' },
+    { label: 'Tracking', value: '189' },
   ];
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'achievements':
+        return (
+          <View style={styles.tabContent}>
+            <View style={styles.achievementsGrid}>
+              {achievements.map((achievement) => (
+                <TouchableOpacity
+                  key={achievement.id}
+                  style={[styles.achievementItem, { backgroundColor: theme.surface, borderColor: theme.border }]}
+                >
+                  <Text style={styles.achievementIcon}>{achievement.icon}</Text>
+                  <Text style={[styles.achievementTitle, { color: theme.textPrimary }]}>
+                    {achievement.title}
+                  </Text>
+                  <Text style={[styles.achievementDescription, { color: theme.textSecondary }]}>
+                    {achievement.description}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        );
+
+      case 'moments':
+        return (
+          <View style={styles.tabContent}>
+            <View style={styles.momentsGrid}>
+              {moments.map((moment) => (
+                <TouchableOpacity key={moment.id} style={styles.momentItem}>
+                  <Image source={{ uri: moment.image }} style={styles.momentImage} />
+                  <View style={styles.momentOverlay}>
+                    <Text style={styles.momentLikes}>❤️ {moment.likes}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        );
+
+      case 'garage':
+        return (
+          <View style={styles.tabContent}>
+            {garage.map((vehicle) => (
+              <TouchableOpacity
+                key={vehicle.id}
+                style={[styles.vehicleCard, { backgroundColor: theme.surface, borderColor: theme.border }]}
+              >
+                <Image source={{ uri: vehicle.image }} style={styles.vehicleImage} />
+                <View style={styles.vehicleInfo}>
+                  <Text style={[styles.vehicleName, { color: theme.textPrimary }]}>
+                    {vehicle.name}
+                  </Text>
+                  <Text style={[styles.vehicleModel, { color: theme.textSecondary }]}>
+                    {vehicle.model} • {vehicle.color}
+                  </Text>
+                  <View style={styles.vehicleSpecs}>
+                    <Text style={[styles.vehicleSpec, { color: theme.textSecondary }]}>
+                      🏍️ {vehicle.engine}
+                    </Text>
+                    <Text style={[styles.vehicleSpec, { color: theme.textSecondary }]}>
+                      ⛽ {vehicle.mileage}
+                    </Text>
+                  </View>
+                </View>
+                <TouchableOpacity style={[styles.editVehicleButton, { backgroundColor: theme.primary }]}>
+                  <Wrench size={16} color="#FFFFFF" />
+                </TouchableOpacity>
+              </TouchableOpacity>
+            ))}
+            <TouchableOpacity
+              style={[styles.addVehicleButton, { backgroundColor: theme.surface, borderColor: theme.border }]}
+            >
+              <Car size={24} color={theme.textSecondary} />
+              <Text style={[styles.addVehicleText, { color: theme.textSecondary }]}>
+                Add Vehicle
+              </Text>
+            </TouchableOpacity>
+          </View>
+        );
+
+      default:
+        return null;
+    }
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
+      {/* Header */}
       <View style={[styles.header, { backgroundColor: theme.surface, borderBottomColor: theme.border }]}>
         <TouchableOpacity onPress={openDrawer}>
           <Menu size={24} color={theme.textPrimary} />
@@ -50,8 +192,17 @@ export default function ProfileScreen() {
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        {/* Banner Background */}
+        <View style={styles.bannerContainer}>
+          <Image
+            source={{ uri: 'https://images.pexels.com/photos/1119796/pexels-photo-1119796.jpeg?auto=compress&cs=tinysrgb&w=800' }}
+            style={styles.bannerImage}
+          />
+          <View style={styles.bannerOverlay} />
+        </View>
+
         {/* Profile Info */}
-        <View style={[styles.profileSection, { backgroundColor: theme.surface }]}>
+        <View style={styles.profileSection}>
           <View style={styles.profileImageContainer}>
             <Image
               source={{ uri: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=200' }}
@@ -74,30 +225,30 @@ export default function ProfileScreen() {
             </Text>
           </View>
 
-          <TouchableOpacity style={[styles.editButton, { backgroundColor: theme.background, borderColor: theme.border }]}>
-            <Edit3 size={16} color={theme.textPrimary} />
-            <Text style={[styles.editButtonText, { color: theme.textPrimary }]}>
+          <TouchableOpacity style={[styles.editButton, { backgroundColor: theme.primary }]}>
+            <Edit3 size={16} color="#FFFFFF" />
+            <Text style={styles.editButtonText}>
               Edit Profile
             </Text>
           </TouchableOpacity>
         </View>
 
         {/* Stats */}
-        <View style={[styles.statsContainer, { backgroundColor: theme.surface }]}>
+        <View style={styles.statsContainer}>
           {stats.map((stat, index) => (
-            <View key={index} style={styles.statItem}>
+            <TouchableOpacity key={index} style={styles.statItem}>
               <Text style={[styles.statValue, { color: theme.textPrimary }]}>
                 {stat.value}
               </Text>
               <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
                 {stat.label}
               </Text>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
 
         {/* Miles Achievement */}
-        <View style={[styles.milesSection, { backgroundColor: theme.surface }]}>
+        <View style={styles.milesSection}>
           <View style={styles.milesHeader}>
             <Award size={24} color={theme.primary} />
             <Text style={[styles.milesTitle, { color: theme.textPrimary }]}>
@@ -120,54 +271,59 @@ export default function ProfileScreen() {
           </Text>
         </View>
 
-        {/* Achievements */}
-        <View style={[styles.achievementsSection, { backgroundColor: theme.surface }]}>
-          <Text style={[styles.sectionTitle, { color: theme.textPrimary }]}>
-            Achievements
-          </Text>
-          <View style={styles.achievementsGrid}>
-            {achievements.map((achievement) => (
-              <View key={achievement.id} style={[styles.achievementItem, { backgroundColor: theme.background, borderColor: theme.border }]}>
-                <Text style={styles.achievementIcon}>{achievement.icon}</Text>
-                <Text style={[styles.achievementTitle, { color: theme.textPrimary }]}>
-                  {achievement.title}
-                </Text>
-                <Text style={[styles.achievementDescription, { color: theme.textSecondary }]}>
-                  {achievement.description}
-                </Text>
-              </View>
-            ))}
-          </View>
+        {/* Tab Navigation */}
+        <View style={styles.tabNavigation}>
+          <TouchableOpacity
+            style={[
+              styles.tabButton,
+              activeTab === 'achievements' && { borderBottomColor: theme.primary, borderBottomWidth: 2 }
+            ]}
+            onPress={() => setActiveTab('achievements')}
+          >
+            <Award size={20} color={activeTab === 'achievements' ? theme.primary : theme.textSecondary} />
+            <Text style={[
+              styles.tabButtonText,
+              { color: activeTab === 'achievements' ? theme.primary : theme.textSecondary }
+            ]}>
+              Achievements
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.tabButton,
+              activeTab === 'moments' && { borderBottomColor: theme.primary, borderBottomWidth: 2 }
+            ]}
+            onPress={() => setActiveTab('moments')}
+          >
+            <Grid3X3 size={20} color={activeTab === 'moments' ? theme.primary : theme.textSecondary} />
+            <Text style={[
+              styles.tabButtonText,
+              { color: activeTab === 'moments' ? theme.primary : theme.textSecondary }
+            ]}>
+              Moments
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.tabButton,
+              activeTab === 'garage' && { borderBottomColor: theme.primary, borderBottomWidth: 2 }
+            ]}
+            onPress={() => setActiveTab('garage')}
+          >
+            <Car size={20} color={activeTab === 'garage' ? theme.primary : theme.textSecondary} />
+            <Text style={[
+              styles.tabButtonText,
+              { color: activeTab === 'garage' ? theme.primary : theme.textSecondary }
+            ]}>
+              Garage
+            </Text>
+          </TouchableOpacity>
         </View>
 
-        {/* Recent Activity */}
-        <View style={[styles.activitySection, { backgroundColor: theme.surface }]}>
-          <Text style={[styles.sectionTitle, { color: theme.textPrimary }]}>
-            Recent Activity
-          </Text>
-          <View style={styles.activityItem}>
-            <MapPin size={20} color={theme.primary} />
-            <View style={styles.activityContent}>
-              <Text style={[styles.activityTitle, { color: theme.textPrimary }]}>
-                Mountain Trail Ride
-              </Text>
-              <Text style={[styles.activitySubtitle, { color: theme.textSecondary }]}>
-                45.2 KM • 2 hours ago
-              </Text>
-            </View>
-          </View>
-          <View style={styles.activityItem}>
-            <Users size={20} color={theme.secondary} />
-            <View style={styles.activityContent}>
-              <Text style={[styles.activityTitle, { color: theme.textPrimary }]}>
-                Group Ride with 8 riders
-              </Text>
-              <Text style={[styles.activitySubtitle, { color: theme.textSecondary }]}>
-                78.5 KM • Yesterday
-              </Text>
-            </View>
-          </View>
-        </View>
+        {/* Tab Content */}
+        {renderTabContent()}
       </ScrollView>
     </View>
   );
@@ -193,16 +349,27 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  bannerContainer: {
+    height: 200,
+    position: 'relative',
+  },
+  bannerImage: {
+    width: '100%',
+    height: '100%',
+  },
+  bannerOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+  },
   profileSection: {
-    padding: 20,
-    margin: 16,
-    borderRadius: 16,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    paddingHorizontal: 20,
+    marginTop: -50,
+    marginBottom: 20,
   },
   profileImageContainer: {
     position: 'relative',
@@ -212,6 +379,8 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
+    borderWidth: 4,
+    borderColor: '#FFFFFF',
   },
   cameraButton: {
     position: 'absolute',
@@ -247,24 +416,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 20,
-    borderWidth: 1,
   },
   editButtonText: {
     marginLeft: 8,
     fontSize: 14,
     fontWeight: '500',
+    color: '#FFFFFF',
   },
   statsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    padding: 20,
-    margin: 16,
-    borderRadius: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
   },
   statItem: {
     alignItems: 'center',
@@ -278,14 +441,8 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   milesSection: {
-    padding: 20,
-    margin: 16,
-    borderRadius: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
   },
   milesHeader: {
     flexDirection: 'row',
@@ -322,20 +479,26 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
   },
-  achievementsSection: {
-    padding: 20,
-    margin: 16,
-    borderRadius: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+  tabNavigation: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    marginBottom: 20,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 16,
+  tabButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+  },
+  tabButtonText: {
+    marginLeft: 8,
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  tabContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 100,
   },
   achievementsGrid: {
     flexDirection: 'row',
@@ -365,34 +528,88 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 16,
   },
-  activitySection: {
-    padding: 20,
-    margin: 16,
-    borderRadius: 16,
-    marginBottom: 100,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+  momentsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
-  activityItem: {
+  momentItem: {
+    width: (width - 60) / 2,
+    aspectRatio: 1,
+    marginBottom: 10,
+    borderRadius: 8,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  momentImage: {
+    width: '100%',
+    height: '100%',
+  },
+  momentOverlay: {
+    position: 'absolute',
+    bottom: 8,
+    right: 8,
+  },
+  momentLikes: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: 'bold',
+    textShadowColor: 'rgba(0,0,0,0.5)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  vehicleCard: {
+    flexDirection: 'row',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 16,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  vehicleImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+  },
+  vehicleInfo: {
+    flex: 1,
+    marginLeft: 16,
+  },
+  vehicleName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  vehicleModel: {
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  vehicleSpecs: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  vehicleSpec: {
+    fontSize: 12,
+  },
+  editVehicleButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  addVehicleButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.1)',
+    justifyContent: 'center',
+    padding: 20,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderStyle: 'dashed',
   },
-  activityContent: {
-    marginLeft: 12,
-    flex: 1,
-  },
-  activityTitle: {
+  addVehicleText: {
+    marginLeft: 8,
     fontSize: 16,
     fontWeight: '500',
-  },
-  activitySubtitle: {
-    fontSize: 14,
-    marginTop: 2,
   },
 });
