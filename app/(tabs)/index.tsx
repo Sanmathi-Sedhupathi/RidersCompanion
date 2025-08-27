@@ -16,6 +16,7 @@ import { DrawerActions } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import StoryViewer from '@/components/StoryViewer';
 import CommentModal from '@/components/CommentModal';
+import ShareModal from '@/components/ShareModal';
 
 const { width } = Dimensions.get('window');
 
