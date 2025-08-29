@@ -8,6 +8,7 @@ import {
   Dimensions,
   Image,
 } from 'react-native';
+import { useFonts } from 'expo-font';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -22,6 +23,10 @@ export default function SplashScreen() {
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
   const bounceAnim = useRef(new Animated.Value(0)).current;
 
+  const [fontsLoaded] = useFonts({
+    'RedSeven': require('@/assets/fonts/Redseven.otf'),
+  });
+
   useEffect(() => {
     // Check if user is already authenticated
     if (isAuthenticated) {
@@ -29,27 +34,33 @@ export default function SplashScreen() {
       return;
     }
 
-    // Start animations
-    Animated.sequence([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 1000,
-        useNativeDriver: true,
-      }),
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        tension: 50,
-        friction: 7,
-        useNativeDriver: true,
-      }),
-      Animated.spring(bounceAnim, {
-        toValue: 1,
-        tension: 100,
-        friction: 8,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, [isAuthenticated]);
+    // Start animations only when fonts are loaded
+    if (fontsLoaded) {
+      Animated.sequence([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.spring(scaleAnim, {
+          toValue: 1,
+          tension: 50,
+          friction: 7,
+          useNativeDriver: true,
+        }),
+        Animated.spring(bounceAnim, {
+          toValue: 1,
+          tension: 100,
+          friction: 8,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+  }, [isAuthenticated, fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   const handleGetStarted = () => {
     Animated.timing(scaleAnim, {
@@ -80,7 +91,7 @@ export default function SplashScreen() {
       >
         <View style={styles.logoContainer}>
           <Image
-            source={require('@/assets/images/WhatsApp Image 2025-08-20 at 12.34.21_3d229e5f.jpg')}
+            source={require('@/assets/images/image copy.png')}
             style={styles.logo}
             resizeMode="contain"
           />
@@ -97,14 +108,17 @@ export default function SplashScreen() {
             },
           ]}
         >
-          <Text style={[styles.title, { color: theme.textPrimary }]}>
+          <Text style={[styles.title, { color: theme.textPrimary, fontFamily: 'RedSeven' }]}>
             RIDER'S COMPANION
           </Text>
-          <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
-            The ultimate riding app for solo journeys & unforgettable group adventures with friends and family.
+          <Text style={[styles.subtitle, { color: '#B71D1D' }]}>
+            The Ultimate Riding Experience
           </Text>
-          <Text style={[styles.tagline, { color: theme.textSecondary }]}>
-            Together on every road.
+          <Text style={[styles.tagline, { color: '#666666' }]}>
+            Solo journeys & group adventures with friends and family
+          </Text>
+          <Text style={[styles.motto, { color: '#B71D1D' }]}>
+            Together on Every Road
           </Text>
         </Animated.View>
 
@@ -157,23 +171,36 @@ const styles = StyleSheet.create({
     marginBottom: 60,
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
-    letterSpacing: 1,
+    letterSpacing: 2,
+    textShadowColor: 'rgba(183, 29, 29, 0.3)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 4,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: '700',
     textAlign: 'center',
-    lineHeight: 24,
-    marginBottom: 10,
-    paddingHorizontal: 20,
+    marginBottom: 12,
+    letterSpacing: 1,
   },
   tagline: {
     fontSize: 14,
-    fontStyle: 'italic',
+    fontWeight: '400',
     textAlign: 'center',
+    lineHeight: 20,
+    paddingHorizontal: 30,
+    marginBottom: 8,
+  },
+  motto: {
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+    fontStyle: 'italic',
+    letterSpacing: 0.5,
   },
   buttonContainer: {
     width: '100%',
