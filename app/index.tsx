@@ -91,7 +91,7 @@ export default function SplashScreen() {
       >
         <View style={styles.logoContainer}>
           <Image
-            source={require('@/assets/images/image copy.png')}
+            source={require('@/assets/images/WhatsApp Image 2025-08-20 at 12.34.21_3d229e5f.jpg')}
             style={styles.logo}
             resizeMode="contain"
           />
